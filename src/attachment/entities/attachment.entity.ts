@@ -51,6 +51,14 @@ export class Attachment extends Common {
     })
     public path: string;
 
+    @Column("tinyint", {
+        nullable: true,
+        width: 1,
+        default: () => "'0'",
+        name: "is_banner",
+    })
+    public isBanner: boolean;
+
     @ManyToOne(() => Business, (business) => business.attachments, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "business_id" })
     public business: Business;

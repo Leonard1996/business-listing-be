@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany } from "typeorm";
+import { Business } from "../../business/entities/business.entity";
 import { Common } from "../../common/entities/common";
 
 @Entity("users")
@@ -98,6 +99,9 @@ export class User extends Common {
     name: "phone_number",
   })
   public phoneNumber: string;
+
+  @OneToMany(() => Business, (business) => business.user)
+  public businesses: Business[];
 
 
   public toResponseObject = () => {

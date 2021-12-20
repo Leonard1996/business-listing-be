@@ -16,7 +16,7 @@ export class Mailer {
 
   public async sendMail(emailTo: String, subject: String, bodyHtml: String) {
     let mailOptions = {
-      from: '"TopTeach" <' + process.env.EMAIL_USERNAME + ">", // sender address
+      from: '"Valhalla" <' + process.env.EMAIL_USERNAME + ">", // sender address
       to: emailTo, // list of receivers
       subject, // Subject line
       html: bodyHtml,
@@ -28,7 +28,7 @@ export class Mailer {
           console.log(error);
           reject(error);
         } else {
-          resolve();
+          resolve(info);
         }
       });
     });

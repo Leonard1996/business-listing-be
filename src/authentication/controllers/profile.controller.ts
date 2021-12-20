@@ -17,20 +17,21 @@ const UUID = require("uuid/v1");
 
 export class ProfileController {
   static register = async (req: Request, res: Response) => {
-    const { name, surname, email, password } = req.body;
+    const { name, surname, email, password, phoneNumber } = req.body;
 
     const newUser: User = new User();
     newUser.name = name;
     newUser.surname = surname;
     newUser.email = email;
     newUser.password = password;
+    newUser.phoneNumber = phoneNumber
 
     const user = await UserService.insert(newUser);
     const userRepository = getCustomRepository(UserRepository);
 
     //SEND ACTIVATION MAIL
     let subject = "Activate Account";
-    let htmlBody = `Click <a href="${process.env.FRONT_END_URL}/verify/${user.verifyToken}"> to activate access to TopTeach.`;
+    let htmlBody = `Click <a href="${process.env.FRONT_END_URL}/verify/${user.verifyToken}"> to activate access to Valhalla.`;
 
     try {
       const mailer = new Mailer();

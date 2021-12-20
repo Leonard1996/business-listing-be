@@ -30,12 +30,14 @@ export class UserService {
       password,
       role,
       profilePicture,
+      phoneNumber
     } = userPayload;
 
-    const user = await userRepository.create({
+    const user = userRepository.create({
       name,
       surname,
       email,
+      phoneNumber,
       username: email,
       password: Md5.init(password),
       role: role ? role : UserRole.USER,

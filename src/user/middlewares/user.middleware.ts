@@ -25,6 +25,7 @@ export class UserMiddleware {
       role: Joi.string().valid(UserRole.ADMIN, UserRole.USER),
       password: Joi.string().min(8).required(),
       profilePicture: Joi.string(),
+      phoneNumber: Joi.string(),
     });
 
     const result = registerInput.validate(request.body, { abortEarly: false });

@@ -21,7 +21,6 @@ export class UserController {
     }
 
     static insert = async (request: Request, response: Response) => {
-
         const user = await UserService.insert(request.body);
 
         response.status(HttpStatusCode.OK).send(new SuccessResponse({ user }));

@@ -10,9 +10,7 @@ export class UserRouter {
     app.get("/users", [
       AuthenticationMiddleware.checkJwtToken,
       PermissionMiddleware.checkAllowedPermissions([
-        UserRole.ADMIN,
-        UserRole.USER,
-      ]),
+        UserRole.ADMIN]),
       UserController.list,
     ]);
 

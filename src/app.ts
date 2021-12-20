@@ -10,6 +10,7 @@ import { DocRouter } from "./doc/doc.router";
 import { AttachmentRouter } from "./attachment/attachment.router";
 import https = require("https");
 import fs = require("fs");
+import { BusinessRouter } from "./business/business.router";
 var app = express();
 
 createConnection()
@@ -30,6 +31,8 @@ createConnection()
 
     // Attachment routes
     AttachmentRouter.configRoutes(app);
+
+    BusinessRouter.configRoutes(app);
 
     // get api version
     app.get(process.env.URL + "/version", (req, res) => {

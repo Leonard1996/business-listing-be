@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany } from "typeorm";
 import { Attachment } from "../../attachment/entities/attachment.entity";
 import { Common } from "../../common/entities/common";
+import { User } from "../../user/entities/user.entity";
 
-@Entity("business")
+@Entity("businesses")
 export class Business extends Common {
     @Column("varchar", {
         nullable: true,
@@ -24,11 +25,12 @@ export class Business extends Common {
     })
     public email: string;
 
-    @Column("int", {
+    @Column("varchar", {
         nullable: true,
         name: "number",
+        length: 155,
     })
-    public number: number;
+    public number: string;
 
     @Column("int", {
         nullable: true,
@@ -95,7 +97,7 @@ export class Business extends Common {
         nullable: true,
         name: "date_added",
     })
-    public date_added: Date | null;
+    public dateAdded: Date | null;
 
     @Column("timestamp", {
         nullable: true,
@@ -205,5 +207,15 @@ export class Business extends Common {
 
     @OneToMany(() => Attachment, (attachment) => attachment.business)
     public attachments: Attachment[];
+
+    @ManyToMany(() => User, (user) => user.businesses)
+    @JoinColumn({ name: "user_id" })
+    public user: User;
+
+    @Column("int", {
+        nullable: true,
+        name: "user_id"
+    })
+    public userId: number;
 
 }

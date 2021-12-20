@@ -24,8 +24,6 @@ export class AuthenticationController {
         });
 
         if (user) {
-            console.log(user);
-
             const accessToken = jwt.sign(
                 { userId: user.id, username: user.username, userRole: user.role },
                 process.env.JWT_SECRET_KEY,
