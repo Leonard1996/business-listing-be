@@ -19,7 +19,8 @@ export class UserRepository extends CommonRepository<User> {
             'surname',
             'email',
             'role',
-            'profile_picture'
+            'profile_picture',
+            'verified',
         ];
 
         const joins = [];
@@ -45,7 +46,7 @@ export class UserRepository extends CommonRepository<User> {
         const paginationResult = queryStringProcessor.getPaginationResponse(parseInt(total));
 
         const sort = this.getSortObject(select, queryStringProcessor);
-        
+
         if (Helper.isDefined(sort)) {
             filterInfo.sort = sort;
         }
