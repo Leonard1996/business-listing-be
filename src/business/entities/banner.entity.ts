@@ -1,9 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne } from "typeorm";
-import { Attachment } from "../../attachment/entities/attachment.entity";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { Common } from "../../common/entities/common";
 import { Business } from "./business.entity";
-
-
 @Entity("banners")
 export class Banner extends Common {
     @Column("mediumtext", {

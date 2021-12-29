@@ -7,6 +7,7 @@ import { QueryStringProcessor } from "../../common/utilities/QueryStringProcesso
 import { SuccessResponse } from "../../common/utilities/SuccessResponse";
 import { Banner } from "../entities/banner.entity";
 import { Business } from "../entities/business.entity";
+import { Message } from "../entities/message.entity";
 import { BusinessRepository } from "../repository/business.repository";
 
 export class BusinessController {
@@ -77,10 +78,59 @@ export class BusinessController {
 
     public static async list(request: Request, response: Response) {
         const businessRepository = getCustomRepository(BusinessRepository);
-        const filter = response.locals.jwt.userRole.toLowerCase() === "admin" ? null : response.locals.jwt.userId;
+        const filter = (response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
         try {
-            const business = await businessRepository.list(new QueryStringProcessor(request.query), filter);
+            const businesses = await businessRepository.list(new QueryStringProcessor(request.query), filter);
+            response.status(200).send(new SuccessResponse(businesses));
+        } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async getById(request: Request, response: Response) {
+        const businessRepository = getRepository(Business);
+        try {
+            const business = await businessRepository.findOneOrFail({
+                where: {
+                    id: request.params.businessId
+                },
+                relations: ['attachments']
+            })
             response.status(200).send(new SuccessResponse(business));
+        } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async insertMessage(request: Request, response: Response) {
+        const messageRepository = getRepository(Message);
+        try {
+            let message = new Message();
+            message.email = request.body.email;
+            message.postedBy = request.body.name;
+            message.subject = request.body.subject;
+            message.message = request.body.message;
+            message.businessId = +request.params.businessId;
+            message = await messageRepository.save(message);
+
+            response.status(200).send(new SuccessResponse(message));
+        } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async delete(request: Request, response: Response) {
+        const businessRepository = getRepository(Business);
+        const bannerRepository = getRepository(Banner);
+        try {
+            await bannerRepository.delete({ businessId: +request.params.businessId })
+            const business = await businessRepository.delete({
+                userId: +response.locals.jwt.userId,
+                id: +request.params.businessId,
+            })
+
+            response.status(200).send(new SuccessResponse(business));
+
         } catch (error) {
             response.status(400).send(new ErrorResponse(error))
         }
