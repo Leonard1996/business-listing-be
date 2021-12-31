@@ -14,17 +14,16 @@ export class BusinessRouter {
         ]);
 
         app.get("/businesses", [
-            AuthenticationMiddleware.checkJwtToken,
+            AuthenticationMiddleware.checkJwtTokenOptional,
             BusinessController.list,
         ]);
 
         app.get("/businesses/:businessId", [
-            AuthenticationMiddleware.checkJwtToken,
+            AuthenticationMiddleware.checkJwtTokenOptional,
             BusinessController.getById,
         ]);
 
         app.post("/businesses/:businessId/messages", [
-            AuthenticationMiddleware.checkJwtToken,
             BusinessController.insertMessage,
         ]);
 

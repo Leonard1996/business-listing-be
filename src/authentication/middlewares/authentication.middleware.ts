@@ -133,4 +133,21 @@ export class AuthenticationMiddleware {
 
     next();
   };
+
+  static checkJwtTokenOptional = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const token = req.header("Authorization");
+
+    try {
+      const jwtPayload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      res.locals.jwt = jwtPayload;
+      next();
+    } catch (error) {
+      next();
+    }
+
+  };
 }

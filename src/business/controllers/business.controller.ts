@@ -1,10 +1,11 @@
 import { Request, response, Response } from "express";
-import { getCustomRepository, getRepository } from "typeorm";
+import { DeleteResult, getCustomRepository, getRepository } from "typeorm";
 import { Attachment } from "../../attachment/entities/attachment.entity";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { File } from "../../common/utilities/File";
 import { QueryStringProcessor } from "../../common/utilities/QueryStringProcessor";
 import { SuccessResponse } from "../../common/utilities/SuccessResponse";
+import { permissions } from "../../user/utilities/UserRole";
 import { Banner } from "../entities/banner.entity";
 import { Business } from "../entities/business.entity";
 import { Message } from "../entities/message.entity";
@@ -78,7 +79,7 @@ export class BusinessController {
 
     public static async list(request: Request, response: Response) {
         const businessRepository = getCustomRepository(BusinessRepository);
-        const filter = (response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
+        const filter = (response.locals.notAuth || response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
         try {
             const businesses = await businessRepository.list(new QueryStringProcessor(request.query), filter);
             response.status(200).send(new SuccessResponse(businesses));
@@ -96,8 +97,21 @@ export class BusinessController {
                 },
                 relations: ['attachments']
             })
+
+            for (const key in business) {
+                if (response.locals.jwt && (response.locals.jwt.userRole === "admin"
+                    || response.locals.jwt.userRole === "hc"
+                    || response.locals.jwt.userRole === "company")) break;
+
+                if (!response.locals.jwt) {
+                    if (!permissions.view.noAuth.includes(key)) delete business[key]
+                } else {
+                    if (!permissions.view[response.locals.jwt.userRole].includes(key)) delete business[key]
+                }
+            }
             response.status(200).send(new SuccessResponse(business));
         } catch (error) {
+            console.log(error)
             response.status(400).send(new ErrorResponse(error))
         }
     }
@@ -123,12 +137,17 @@ export class BusinessController {
         const businessRepository = getRepository(Business);
         const bannerRepository = getRepository(Banner);
         try {
-            await bannerRepository.delete({ businessId: +request.params.businessId })
-            const business = await businessRepository.delete({
+            let business: unknown = await businessRepository.findOneOrFail({
                 userId: +response.locals.jwt.userId,
                 id: +request.params.businessId,
             })
 
+            await bannerRepository.delete({ businessId: +request.params.businessId })
+
+            business = await businessRepository.delete({
+                userId: +response.locals.jwt.userId,
+                id: +request.params.businessId,
+            });
             response.status(200).send(new SuccessResponse(business));
 
         } catch (error) {

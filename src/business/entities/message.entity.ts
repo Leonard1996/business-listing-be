@@ -40,6 +40,5 @@ export class Message extends Common {
 
     @ManyToOne(() => Business, (business) => business.messages)
     @JoinColumn({ name: "business_id" })
-    public business: Business;
-
+    public business: Business
 }
