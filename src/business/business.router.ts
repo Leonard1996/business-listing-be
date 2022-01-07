@@ -20,6 +20,7 @@ export class BusinessRouter {
 
         app.get("/businesses/:businessId", [
             AuthenticationMiddleware.checkJwtTokenOptional,
+            AuthenticationMiddleware.checkIfFieldsAllowed,
             BusinessController.getById,
         ]);
 
@@ -30,6 +31,12 @@ export class BusinessRouter {
         app.delete("/businesses/:businessId", [
             AuthenticationMiddleware.checkJwtToken,
             BusinessController.delete,
+        ]);
+
+        app.post("/businesses/filter", [
+            AuthenticationMiddleware.checkJwtTokenOptional,
+            AuthenticationMiddleware.checkIfFieldsAllowed,
+            BusinessController.filter,
         ]);
     };
 }

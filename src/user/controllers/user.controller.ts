@@ -7,15 +7,18 @@ import { QueryStringProcessor } from "../../common/utilities/QueryStringProcesso
 import { IUserFilter } from "../utilities/user-filter.interface";
 import { Helper } from "../../common/utilities/Helper";
 import { HttpStatusCode } from "../../common/utilities/HttpStatusCodes";
+import { getRepository } from "typeorm";
+import { User } from "../entities/user.entity";
 
 export class UserController {
 
     static list = async (request: Request, response: Response) => {
 
-        const queryStringProcessor = new QueryStringProcessor(request.query);
-        const filter: IUserFilter = {};
+        // const queryStringProcessor = new QueryStringProcessor(request.query);
+        // const filter: IUserFilter = {};
+        const userRepository = getRepository(User);
 
-        const results = await UserService.list(queryStringProcessor, filter);
+        const results = await userRepository.find();
 
         response.status(HttpStatusCode.OK).send(new SuccessResponse({ results }));
     }

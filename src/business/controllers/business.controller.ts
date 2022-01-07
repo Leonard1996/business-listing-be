@@ -79,7 +79,7 @@ export class BusinessController {
 
     public static async list(request: Request, response: Response) {
         const businessRepository = getCustomRepository(BusinessRepository);
-        const filter = (response.locals.notAuth || response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
+        const filter = (!response.locals.jwt || response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
         try {
             const businesses = await businessRepository.list(new QueryStringProcessor(request.query), filter);
             response.status(200).send(new SuccessResponse(businesses));
@@ -151,6 +151,18 @@ export class BusinessController {
             response.status(200).send(new SuccessResponse(business));
 
         } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async filter(request: Request, response: Response) {
+        const businessRepository = getCustomRepository(BusinessRepository);
+        const filter = (!response.locals.jwt || response.locals.jwt.userRole.toLowerCase() === "admin" || request.query.isFilter) ? null : response.locals.jwt.userId;
+        try {
+            const businesses = await businessRepository.filter(new QueryStringProcessor(request.query), filter, request.body, response.locals);
+            response.status(200).send(new SuccessResponse(businesses));
+        } catch (error) {
+            console.log(error)
             response.status(400).send(new ErrorResponse(error))
         }
     }

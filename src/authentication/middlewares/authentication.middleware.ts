@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction, request } from "express";
 import * as jwt from "jsonwebtoken";
 import { Md5 } from "md5-typescript";
-import { nextTick } from "node:process";
 import { getRepository } from "typeorm";
 import { ERROR_MESSAGES } from "../../common/utilities/ErrorMessages";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { HttpStatusCode } from "../../common/utilities/HttpStatusCodes";
 import { User } from "../../user/entities/user.entity";
+import { permissions } from "../../user/utilities/UserRole";
 const Joi = require("@hapi/joi");
 
 export class AuthenticationMiddleware {
@@ -150,4 +150,23 @@ export class AuthenticationMiddleware {
     }
 
   };
+
+  static checkIfFieldsAllowed = (request: Request, response: Response, next: NextFunction) => {
+    for (const key in request.body) {
+      if (response.locals.jwt && (response.locals.jwt.userRole === "admin"
+        || response.locals.jwt.userRole === "hc"
+        || response.locals.jwt.userRole === "company")) break;
+
+      if (!response.locals.jwt) {
+        if (!permissions.filter.noAuth.includes(key)) delete request.body[key]
+      } else {
+        if (!permissions.filter[response.locals.jwt.userRole].includes(key)) {
+          return response
+            .status(HttpStatusCode.FORBIDDEN)
+            .send(HttpStatusCode.FORBIDDEN);
+        }
+      }
+    }
+    next();
+  }
 }
