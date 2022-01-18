@@ -1,5 +1,5 @@
-import { Request, response, Response } from "express";
-import { DeleteResult, getCustomRepository, getRepository } from "typeorm";
+import { Request, Response } from "express";
+import { getCustomRepository, getRepository, Not } from "typeorm";
 import { Attachment } from "../../attachment/entities/attachment.entity";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { File } from "../../common/utilities/File";
@@ -8,6 +8,7 @@ import { SuccessResponse } from "../../common/utilities/SuccessResponse";
 import { permissions } from "../../user/utilities/UserRole";
 import { Banner } from "../entities/banner.entity";
 import { Business } from "../entities/business.entity";
+import { Like } from "../entities/like.entity";
 import { Message } from "../entities/message.entity";
 import { BusinessRepository } from "../repository/business.repository";
 
@@ -163,6 +164,76 @@ export class BusinessController {
             response.status(200).send(new SuccessResponse(businesses));
         } catch (error) {
             console.log(error)
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async listSimilar(request: Request, response: Response) {
+        const businessRepository = getRepository(Business);
+        try {
+            const businesses = await businessRepository.find({
+                where: {
+                    industry: request.query.industry,
+                    id: Not(request.query.self)
+                },
+                take: 3,
+            })
+            response.status(200).send(new SuccessResponse(businesses));
+        } catch (error) {
+            console.log(error)
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async like(request: Request, response: Response) {
+        const likeRepository = getRepository(Like);
+        try {
+            let existing = await likeRepository.findOne({
+                where: {
+                    userId: response.locals.jwt.userId,
+                    businessId: request.body.id,
+                }
+            })
+
+            if (existing) {
+                existing.deleted = !existing.deleted;
+                await likeRepository.save(existing);
+                return response.status(200).send(new SuccessResponse(existing));
+            }
+
+            let like = new Like();
+            like.userId = response.locals.jwt.userId;
+            like.businessId = request.body.id
+            like = await likeRepository.save(like);
+            response.status(200).send(new SuccessResponse(like));
+        } catch (error) {
+            console.log(error)
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async check(request: Request, response: Response) {
+        const likeRepository = getRepository(Like);
+        try {
+            const like = await likeRepository.findOneOrFail({
+                where: {
+                    userId: response.locals.jwt.userId,
+                    businessId: request.params.businessId,
+                }
+            })
+            response.status(200).send(new SuccessResponse(like));
+        } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async listSaved(request: Request, response: Response) {
+        const businessRepository = getCustomRepository(BusinessRepository);
+        const filter = response.locals.jwt.userId;
+        try {
+            const businesses = await businessRepository.listSaved(new QueryStringProcessor(request.query), filter, request.body, response.locals);
+            response.status(200).send(new SuccessResponse(businesses));
+        } catch (error) {
             response.status(400).send(new ErrorResponse(error))
         }
     }

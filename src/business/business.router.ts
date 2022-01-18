@@ -38,5 +38,24 @@ export class BusinessRouter {
             AuthenticationMiddleware.checkIfFieldsAllowed,
             BusinessController.filter,
         ]);
+
+        app.get("/similar-businesses", [
+            BusinessController.listSimilar,
+        ]);
+
+        app.post("/like-business", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.like,
+        ]);
+
+        app.get("/like-business/:businessId", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.check,
+        ]);
+
+        app.get("/like-business", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.listSaved,
+        ]);
     };
 }

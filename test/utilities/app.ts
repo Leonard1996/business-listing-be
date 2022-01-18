@@ -8,9 +8,9 @@ import { UserRouter } from '../../src/user/user.router';
 
 const app = express();
 
-app.use(cors())
-app.use(bodyParser.json({limit: '200mb'}));
-app.use(bodyParser.urlencoded({limit: '200mb', extended: true}));
+// app.use(cors())
+app.use(bodyParser.json({ limit: '200mb' }));
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 
 //Authentication routes
 AuthenticationRouter.configRoutes(app);

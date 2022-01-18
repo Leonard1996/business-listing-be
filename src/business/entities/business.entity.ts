@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToMany, OneToMany } from "typeorm";
 import { Attachment } from "../../attachment/entities/attachment.entity";
 import { Common } from "../../common/entities/common";
 import { User } from "../../user/entities/user.entity";
+import { Like } from "./like.entity";
 import { Message } from "./message.entity";
 
 @Entity("businesses")
@@ -211,6 +212,9 @@ export class Business extends Common {
 
     @OneToMany(() => Message, (attachment) => attachment.message)
     public messages: Message[];
+
+    @OneToMany(() => Like, (like) => like.business)
+    public likes: Like[];
 
     @ManyToMany(() => User, (user) => user.businesses)
     @JoinColumn({ name: "user_id" })

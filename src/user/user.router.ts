@@ -8,9 +8,9 @@ import { UserRole } from "./utilities/UserRole";
 export class UserRouter {
   static configRoutes = (app: express.Application) => {
     app.get("/users", [
-      // AuthenticationMiddleware.checkJwtToken,
-      // PermissionMiddleware.checkAllowedPermissions([
-      //   UserRole.ADMIN]),
+      AuthenticationMiddleware.checkJwtToken,
+      PermissionMiddleware.checkAllowedPermissions([
+        UserRole.ADMIN]),
       UserController.list,
     ]);
 
