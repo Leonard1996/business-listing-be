@@ -137,11 +137,14 @@ export class BusinessController {
     public static async delete(request: Request, response: Response) {
         const businessRepository = getRepository(Business);
         const bannerRepository = getRepository(Banner);
+        const likeRepository = getRepository(Like);
         try {
             let business: unknown = await businessRepository.findOneOrFail({
                 userId: +response.locals.jwt.userId,
                 id: +request.params.businessId,
             })
+
+            await likeRepository.delete({ businessId: +request.params.businessId })
 
             await bannerRepository.delete({ businessId: +request.params.businessId })
 
@@ -215,7 +218,7 @@ export class BusinessController {
     public static async check(request: Request, response: Response) {
         const likeRepository = getRepository(Like);
         try {
-            const like = await likeRepository.findOneOrFail({
+            const like = await likeRepository.findOne({
                 where: {
                     userId: response.locals.jwt.userId,
                     businessId: request.params.businessId,
@@ -234,6 +237,23 @@ export class BusinessController {
             const businesses = await businessRepository.listSaved(new QueryStringProcessor(request.query), filter, request.body, response.locals);
             response.status(200).send(new SuccessResponse(businesses));
         } catch (error) {
+            response.status(400).send(new ErrorResponse(error))
+        }
+    }
+
+    public static async getMyBusiness(request: Request, response: Response) {
+        const businessRepository = getCustomRepository(BusinessRepository);
+        const { locals: { jwt: { userRole, userId } } } = response;
+        try {
+            const business = await businessRepository.findOneOrFail({
+                where: {
+                    id: +request.params.businessId,
+                    ...(userRole.toLowerCase() !== 'admin' && { userId })
+                }, relations: ['attachments']
+            })
+            response.status(200).send(new SuccessResponse(business));
+        } catch (error) {
+            console.log(error)
             response.status(400).send(new ErrorResponse(error))
         }
     }

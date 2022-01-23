@@ -57,5 +57,10 @@ export class BusinessRouter {
             AuthenticationMiddleware.checkJwtToken,
             BusinessController.listSaved,
         ]);
+
+        app.get("/my-businesses/:businessId", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.getMyBusiness,
+        ]);
     };
 }
