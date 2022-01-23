@@ -72,7 +72,6 @@ export class BusinessRepository extends CommonRepository<Business> {
         const select = ["businesses.*, banners.path"];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
-
         for (const element of permissions.view[role]) {
             if (permissionsMapped[element] && permissionsMapped[element][0]) {
                 select.push("businesses." + permissionsMapped[element][0])
@@ -143,7 +142,6 @@ export class BusinessRepository extends CommonRepository<Business> {
         likes.business_id as likesBusinessId`];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
-
         for (const element of permissions.view[role]) {
             if (permissionsMapped[element] && permissionsMapped[element][0]) {
                 select.push("businesses." + permissionsMapped[element][0])

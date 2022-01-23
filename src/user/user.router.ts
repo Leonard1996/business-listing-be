@@ -36,7 +36,6 @@ export class UserRouter {
     app.patch("/users/:userId", [
       AuthenticationMiddleware.checkJwtToken,
       PermissionMiddleware.checkAllowedPermissions([UserRole.ADMIN]),
-      UserMiddleware.validationPatchByIdInput,
       UserController.patchById,
     ]);
 

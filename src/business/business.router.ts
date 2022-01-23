@@ -7,7 +7,7 @@ import { BusinessController } from "./controllers/business.controller";
 
 export class BusinessRouter {
     static configRoutes = (app: express.Application) => {
-        app.post("/business", [
+        app.post("/businesses", [
             AuthenticationMiddleware.checkJwtToken,
             UploadMiddleware.validateFileUpload('file', ["jpg", "jpeg", "png"], 11),
             BusinessController.insert,
@@ -61,6 +61,12 @@ export class BusinessRouter {
         app.get("/my-businesses/:businessId", [
             AuthenticationMiddleware.checkJwtToken,
             BusinessController.getMyBusiness,
+        ]);
+
+        app.patch("/businesses", [
+            AuthenticationMiddleware.checkJwtToken,
+            UploadMiddleware.validateFileUpload('file', ["jpg", "jpeg", "png"], 11),
+            BusinessController.update,
         ]);
     };
 }

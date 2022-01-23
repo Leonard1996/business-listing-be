@@ -38,7 +38,7 @@ export class Message extends Common {
     })
     public businessId: number;
 
-    @ManyToOne(() => Business, (business) => business.messages)
+    @ManyToOne(() => Business, (business) => business.messages, { onDelete: 'CASCADE' })
     @JoinColumn({ name: "business_id" })
     public business: Business
 }

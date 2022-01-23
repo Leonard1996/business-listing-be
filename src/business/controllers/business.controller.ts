@@ -138,6 +138,7 @@ export class BusinessController {
         const businessRepository = getRepository(Business);
         const bannerRepository = getRepository(Banner);
         const likeRepository = getRepository(Like);
+        const messageRepository = getRepository(Message);
         try {
             let business: unknown = await businessRepository.findOneOrFail({
                 userId: +response.locals.jwt.userId,
@@ -147,6 +148,8 @@ export class BusinessController {
             await likeRepository.delete({ businessId: +request.params.businessId })
 
             await bannerRepository.delete({ businessId: +request.params.businessId })
+
+            await messageRepository.delete({ businessId: +request.params.businessId })
 
             business = await businessRepository.delete({
                 userId: +response.locals.jwt.userId,
@@ -256,5 +259,57 @@ export class BusinessController {
             console.log(error)
             response.status(400).send(new ErrorResponse(error))
         }
+    }
+
+    static async update(request: Request, response: Response) {
+        const businessRepository = getRepository(Business);
+        const bannersRepository = getRepository(Banner);
+        const { essentials, notes, currencies, dates, selects, mapState, isWithBanner, businessId } = JSON.parse(request.body.business);
+
+        try {
+            const existing = await businessRepository.findOneOrFail(businessId, { relations: ['attachments'] })
+            let business;
+            business = { ...business, ...essentials, ...notes, ...currencies, ...dates, ...selects, ...mapState }
+            business.mapPositionLat = mapState.mapPosition.lat;
+            business.mapPositionLng = mapState.mapPosition.lng;
+            business.markerPositionLat = mapState.markerPosition.lat;
+            business.markerPositionLng = mapState.markerPosition.lng;
+            business.userId = response.locals.jwt.userId;
+
+            let banner: any = {}
+
+            if (request.files) {
+                if (isWithBanner) {
+                    request.files[0].isBanner = true;
+                    banner.path = request.files[0].path;
+
+                }
+                const queries = [];
+
+                for (const file of request.files as Array<Express.Multer.File>) {
+                    queries.push(BusinessController.saveAttachment(file))
+                }
+
+                const attachments = await Promise.all(queries);
+                business.attachments = attachments;
+
+            }
+            business = businessRepository.merge(existing, business);
+            console.log(business);
+            business = await businessRepository.save(business);
+            if (isWithBanner) {
+                banner.businessId = business.id;
+                await bannersRepository.save(banner);
+            }
+
+
+            response.status(201).send(new SuccessResponse(business))
+
+        } catch (error) {
+            console.log(error);
+            return response.status(400).send(new ErrorResponse(error))
+        }
+
+
     }
 }

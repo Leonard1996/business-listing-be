@@ -22,6 +22,10 @@ export const permissions = {
             "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
             "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
             "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
+        admin: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
+            "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
+            "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
+            "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
 
     },
     view: {
@@ -34,15 +38,20 @@ export const permissions = {
             "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
             "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
             "mapPositionLng", "mapPositionLat"],
+        hc: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
+            "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
+            "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
+            "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
+        company: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
+            "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
+            "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
+            "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
+        admin: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
+            "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
+            "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
+            "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
     },
-    hc: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
-        "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
-        "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
-        "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
-    company: ["ownerName", "attachments", "city", "reference", "industry", "title", "currentDebts", "projectedAnnualTurnover",
-        "lastAnnualTurnover", "lastAnnualProfit", "yearEstablished", "description",
-        "services", "ownerManaged", "askingPrice", "projectedAnnualProfit", "noOfShareholders", "noOfStaff", "relocatable", "address", "state", "city", "area",
-        "mapPositionLng", "mapPositionLat", "reasonForSelling", "tsCreated"],
+
 
 }
 

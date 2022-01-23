@@ -3,22 +3,21 @@ import { SuccessResponse } from "../../common/utilities/SuccessResponse";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { ERROR_MESSAGES } from "../../common/utilities/ErrorMessages";
 import { UserService } from "../services/user.service";
-import { QueryStringProcessor } from "../../common/utilities/QueryStringProcessor";
-import { IUserFilter } from "../utilities/user-filter.interface";
 import { Helper } from "../../common/utilities/Helper";
 import { HttpStatusCode } from "../../common/utilities/HttpStatusCodes";
-import { getRepository } from "typeorm";
+import { getRepository, Not } from "typeorm";
 import { User } from "../entities/user.entity";
 
 export class UserController {
 
     static list = async (request: Request, response: Response) => {
-
-        // const queryStringProcessor = new QueryStringProcessor(request.query);
-        // const filter: IUserFilter = {};
         const userRepository = getRepository(User);
 
-        const results = await userRepository.find();
+        const results = await userRepository.find({
+            where: {
+                id: Not(response.locals.jwt.userId)
+            }
+        });
 
         response.status(HttpStatusCode.OK).send(new SuccessResponse({ results }));
     }
