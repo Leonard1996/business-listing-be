@@ -69,7 +69,7 @@ export class ProfileMiddleware {
   ) => {
     const registerInput = Joi.object().keys({
       token: Joi.string().required(),
-      password: Joi.string().min(8).required(),
+      password: Joi.string().min(1).required(),
     });
 
     const result = registerInput.validate(req.body, { abortEarly: false });

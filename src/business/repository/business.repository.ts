@@ -69,7 +69,7 @@ export class BusinessRepository extends CommonRepository<Business> {
         locals: any,
     ) => {
 
-        const select = ["businesses.*, banners.path"];
+        const select = ["businesses.id, banners.path"];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
         for (const element of permissions.view[role]) {
@@ -89,7 +89,6 @@ export class BusinessRepository extends CommonRepository<Business> {
         const queryConditions = [
             filterCondition,
         ];
-
 
         for (const [key, value] of Object.entries(body)) {
             if (!permissionsMapped[key][1](value)) continue;

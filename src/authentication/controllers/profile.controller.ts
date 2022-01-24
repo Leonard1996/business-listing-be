@@ -4,12 +4,10 @@ import { Md5 } from "md5-typescript";
 import { Mailer } from "../../common/utilities/Mailer";
 import { User } from "../../user/entities/user.entity";
 import { Functions } from "../../common/utilities/Functions";
-import { UserRole } from "../../user/utilities/UserRole";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { ERROR_MESSAGES } from "../../common/utilities/ErrorMessages";
 import { SuccessResponse } from "../../common/utilities/SuccessResponse";
 import { RefreshTokenRepository } from "../repositories/refresh.token.repository";
-import { UserController } from "../../user/controllers/user.controller";
 import { UserService } from "../../user/services/user.service";
 import { UserRepository } from "../../user/repositories/user.repository";
 
