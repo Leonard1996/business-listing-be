@@ -8,6 +8,7 @@ import { SuccessResponse } from "../../common/utilities/SuccessResponse";
 import { permissions } from "../../user/utilities/UserRole";
 import { Banner } from "../entities/banner.entity";
 import { Business } from "../entities/business.entity";
+import { Email } from "../entities/email.entity";
 import { Like } from "../entities/like.entity";
 import { Message } from "../entities/message.entity";
 import { BusinessRepository } from "../repository/business.repository";
@@ -309,7 +310,18 @@ export class BusinessController {
             console.log(error);
             return response.status(400).send(new ErrorResponse(error))
         }
+    }
 
-
+    public static async email(request: Request, response: Response) {
+        const emailRepository = getRepository(Email);
+        try {
+            let email = new Email();
+            email.email = request.body.email
+            email = await emailRepository.save(email)
+            response.status(201).send(new SuccessResponse(email))
+        } catch (error) {
+            console.log(error)
+            return response.status(400).send(new ErrorResponse(error))
+        }
     }
 }

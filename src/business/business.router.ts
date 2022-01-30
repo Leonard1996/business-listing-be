@@ -68,5 +68,9 @@ export class BusinessRouter {
             UploadMiddleware.validateFileUpload('file', ["jpg", "jpeg", "png"], 11),
             BusinessController.update,
         ]);
+
+        app.post("/emails", [
+            BusinessController.email,
+        ]);
     };
 }

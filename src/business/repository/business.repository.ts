@@ -54,7 +54,9 @@ export class BusinessRepository extends CommonRepository<Business> {
             joins,
             filterInfo,
             queryStringProcessor.getOffset(),
-            queryStringProcessor.getLimit()
+            queryStringProcessor.getLimit(),
+            "id",
+            "DESC",
         );
         return {
             pagination: paginationResult,
@@ -119,7 +121,9 @@ export class BusinessRepository extends CommonRepository<Business> {
             joins,
             filterInfo,
             queryStringProcessor.getOffset(),
-            queryStringProcessor.getLimit()
+            queryStringProcessor.getLimit(),
+            "id",
+            "DESC",
         );
         return {
             pagination: paginationResult,
@@ -191,7 +195,9 @@ export class BusinessRepository extends CommonRepository<Business> {
             joins,
             filterInfo,
             queryStringProcessor.getOffset(),
-            queryStringProcessor.getLimit()
+            queryStringProcessor.getLimit(),
+            "id",
+            "DESC",
         );
         return {
             pagination: paginationResult,
