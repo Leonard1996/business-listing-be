@@ -1,5 +1,4 @@
 import * as express from "express";
-import { ConnectionIsNotSetError } from "typeorm";
 import { UploadMiddleware } from "../attachment/middlewares/upload.middleware";
 import { AuthenticationMiddleware } from "../authentication/middlewares/authentication.middleware";
 import { BusinessController } from "./controllers/business.controller";

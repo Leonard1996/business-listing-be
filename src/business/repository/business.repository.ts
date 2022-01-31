@@ -71,7 +71,7 @@ export class BusinessRepository extends CommonRepository<Business> {
         locals: any,
     ) => {
 
-        const select = ["businesses.id, banners.path"];
+        const select = ["businesses.id, banners.path, businesses.name_of_business"];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
         for (const element of permissions.view[role]) {
@@ -142,7 +142,7 @@ export class BusinessRepository extends CommonRepository<Business> {
         const select = [`businesses.id,  banners.deleted as 
         bannerDeleted, banners.path,
         likes.id as fsdfdfs, likes.user_id as likesUserId, 
-        likes.business_id as likesBusinessId`];
+        likes.business_id as likesBusinessId,  businesses.name_of_business`];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
         for (const element of permissions.view[role]) {

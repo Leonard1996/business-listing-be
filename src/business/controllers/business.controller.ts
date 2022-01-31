@@ -296,7 +296,6 @@ export class BusinessController {
 
             }
             business = businessRepository.merge(existing, business);
-            console.log(business);
             business = await businessRepository.save(business);
             if (isWithBanner) {
                 banner.businessId = business.id;
