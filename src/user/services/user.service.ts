@@ -69,12 +69,13 @@ export class UserService {
     return await userRepository.findById(userId);
   };
 
-  static update = async (userPayload: User, currentUser: User) => {
+  static update = async (userPayload, currentUser: User) => {
     const userRepository = getCustomRepository(UserRepository);
 
-    if (Helper.isDefined(userPayload.password)) {
-      userPayload.password = Md5.init(userPayload.password);
+    if (userPayload.newPassword && userPayload.confirmPassword && (userPayload.newPassword === userPayload.confirmPassword)) {
+      userPayload.password = Md5.init(userPayload.newPassword);
     }
+
 
     const finalUser = userRepository.merge(currentUser, userPayload);
     await userRepository.save(finalUser);

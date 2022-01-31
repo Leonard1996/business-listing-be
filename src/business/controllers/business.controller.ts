@@ -323,4 +323,18 @@ export class BusinessController {
             return response.status(400).send(new ErrorResponse(error))
         }
     }
+
+    public static async count(request: Request, response: Response) {
+        const businessRepository = getRepository(Business);
+        try {
+            const options = response.locals.jwt.userRole !== 'admin' ?
+                {} : { where: { userId: response.locals.jwt.userId } }
+
+            const businessCount = await businessRepository.count(options)
+            response.status(201).send(new SuccessResponse({ businessCount }))
+        } catch (error) {
+            console.log(error)
+            return response.status(400).send(new ErrorResponse(error))
+        }
+    }
 }

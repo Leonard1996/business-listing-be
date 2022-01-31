@@ -29,14 +29,21 @@ export class UserController {
     }
 
     static getById = async (request: Request, response: Response) => {
-
-        const user = await UserService.getById(+request.params.userId);
-
-        if (Helper.isDefined(user)) {
-            response.status(HttpStatusCode.OK).send(new SuccessResponse(user.toResponseObject()));
-        } else {
+        try {
+            const user = await UserService.getById(+request.params.userId);
+            if (Helper.isDefined(user)) {
+                response.status(HttpStatusCode.OK).send(new SuccessResponse(user.toResponseObject()));
+            }
+            else {
+                response.status(HttpStatusCode.NOT_FOUND).send(new ErrorResponse(ERROR_MESSAGES.RECORD_NOT_FOUND));
+            }
+        } catch (error) {
+            console.log(error)
             response.status(HttpStatusCode.NOT_FOUND).send(new ErrorResponse(ERROR_MESSAGES.RECORD_NOT_FOUND));
+
         }
+
+
     }
 
     static patchById = async (request: Request, response: Response) => {

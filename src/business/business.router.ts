@@ -71,5 +71,10 @@ export class BusinessRouter {
         app.post("/emails", [
             BusinessController.email,
         ]);
+
+        app.get("/count/businesses", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.count,
+        ]);
     };
 }
