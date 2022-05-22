@@ -1,10 +1,12 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { getCustomRepository, getRepository, Not } from "typeorm";
 import { Attachment } from "../../attachment/entities/attachment.entity";
 import { ErrorResponse } from "../../common/utilities/ErrorResponse";
 import { File } from "../../common/utilities/File";
+import { Mailer } from "../../common/utilities/Mailer";
 import { QueryStringProcessor } from "../../common/utilities/QueryStringProcessor";
 import { SuccessResponse } from "../../common/utilities/SuccessResponse";
+import { User } from "../../user/entities/user.entity";
 import { permissions } from "../../user/utilities/UserRole";
 import { Banner } from "../entities/banner.entity";
 import { Business } from "../entities/business.entity";
@@ -127,7 +129,24 @@ export class BusinessController {
             message.subject = request.body.subject;
             message.message = request.body.message;
             message.businessId = +request.params.businessId;
+            message.link = request.body.link;
             message = await messageRepository.save(message);
+
+            const mailerService = new Mailer();
+            mailerService.sendMail("leonard9619@gmail.com", "Received a new message",
+                `
+            <div>
+                New message on business that can be reached by clicking <b><a href='${message.link}'>here<a/></b>
+                <p>Posted by: ${message.postedBy}</p>
+                <p>Subject: ${message.subject}</p>
+                <p>Poster email: ${message.email}</p>
+                <p>Message content: </p>
+                <p>${message.message}</p>
+            </div>
+            `
+            )
+
+
 
             response.status(200).send(new SuccessResponse(message));
         } catch (error) {
@@ -326,15 +345,27 @@ export class BusinessController {
 
     public static async count(request: Request, response: Response) {
         const businessRepository = getRepository(Business);
+        const userRepository = getRepository(User);
         try {
             const options = response.locals.jwt.userRole !== 'admin' ?
                 {} : { where: { userId: response.locals.jwt.userId } }
 
-            const businessCount = await businessRepository.count(options)
-            response.status(201).send(new SuccessResponse({ businessCount }))
+            const businessesCount = await businessRepository.count(options);
+            const usersCount = await userRepository.count();
+            response.status(201).send(new SuccessResponse({ businessesCount, usersCount }))
         } catch (error) {
             console.log(error)
             return response.status(400).send(new ErrorResponse(error))
         }
+    }
+
+    public static async statistics(request: Request, response: Response) {
+        const businessRepository = getCustomRepository(BusinessRepository);
+
+        const { byArea, byIndustry } = await businessRepository.statistics()
+        response.status(201).send(new SuccessResponse({ byArea, byIndustry }))
+    } catch(error) {
+        console.log(error)
+        return response.status(400).send(new ErrorResponse(error))
     }
 }

@@ -19,8 +19,8 @@ export class Mailer {
       port: 587,
       secure: false,
       auth: {
-        user: "464725cb37e317",
-        pass: "1a74d497cfbc28"
+        user: "f8cec2f3d3c55c",
+        pass: "3ea58b5f998668"
       },
       tls: { rejectUnauthorized: false }
     });

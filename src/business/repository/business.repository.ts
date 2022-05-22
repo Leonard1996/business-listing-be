@@ -71,7 +71,7 @@ export class BusinessRepository extends CommonRepository<Business> {
         locals: any,
     ) => {
 
-        const select = ["businesses.id, banners.path, businesses.name_of_business"];
+        const select = ["businesses.id, banners.path, businesses.name_of_business, businesses.industry"];
 
         const role = locals.jwt ? locals.jwt.userRole : 'noAuth';
         for (const element of permissions.view[role]) {
@@ -204,5 +204,27 @@ export class BusinessRepository extends CommonRepository<Business> {
             page: results,
         };
     };
+
+    public async statistics() {
+        const byArea = await this.createQueryBuilder('b')
+            .select('count(id) as cnt, address, id ')
+            .where("address is not null")
+            .andWhere("address <> '' ")
+            .groupBy('address')
+            .orderBy('cnt', 'DESC')
+            .limit(3)
+            .getRawMany();
+
+        const byIndustry = await this.createQueryBuilder('b')
+            .select('count(id) as cnt, industry, id ')
+            .where("industry is not null")
+            .andWhere("industry <> '' ")
+            .groupBy('industry')
+            .orderBy('cnt', 'DESC')
+            .limit(3)
+            .getRawMany();
+
+        return { byArea, byIndustry }
+    }
 
 }

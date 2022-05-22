@@ -74,7 +74,12 @@ export class BusinessRouter {
 
         app.get("/count/businesses", [
             AuthenticationMiddleware.checkJwtToken,
-            BusinessController.count,
+            BusinessController.count
+        ]);
+
+        app.get("/businesses-statistics", [
+            AuthenticationMiddleware.checkJwtToken,
+            BusinessController.statistics,
         ]);
     };
 }
